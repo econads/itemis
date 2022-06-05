@@ -4,12 +4,11 @@ import java.math.BigDecimal;
 
 /**
  * Denotes the possible types of tax and information for calculating them.
- * e.g. if SALES tax charges 10% of the total, and here we have it in decimal form as 0.1, it indicates that if the
- * price before tax is 10.00, then the price after is 10.10
+ * e.g. SALES tax charges 10% of the total. Here we hold it in decimal form as 0.1 which indicates that if the price
+ * before tax is 10.00, then the price after tax is 10.10
  */
 public enum TaxType {
 
-    EXEMPT(BigDecimal.ZERO),
     IMPORT(new BigDecimal("0.05")),
     SALES(new BigDecimal("0.10"));
 

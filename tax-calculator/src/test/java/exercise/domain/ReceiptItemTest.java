@@ -1,12 +1,10 @@
-package exercise;
+package exercise.domain;
 
-import exercise.domain.ReceiptItem;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
-import static exercise.domain.TaxType.EXEMPT;
 import static exercise.domain.TaxType.IMPORT;
 import static exercise.domain.TaxType.SALES;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +21,7 @@ class ReceiptItemTest {
     @Test
     public void calculateTaxExempt() {
         String bookNetValue = "12.49";
-        ReceiptItem underTest = new ReceiptItem("book", Set.of(EXEMPT), new BigDecimal(bookNetValue));
+        ReceiptItem underTest = new ReceiptItem("book", Set.of(), new BigDecimal(bookNetValue));
         assertThat(underTest.getTaxes()).isZero();
         assertThat(underTest.getGrossValue()).isEqualTo(bookNetValue);
     }

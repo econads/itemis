@@ -24,6 +24,7 @@ public class ReceiptItem {
         this.netValue = netValue;
         setCalculatedFields();
     }
+
     private void setCalculatedFields() {
 
         BigDecimal totalPercentage = BigDecimal.ZERO;
@@ -63,5 +64,9 @@ public class ReceiptItem {
 
     public BigDecimal getTaxes() {
         return taxes;
+    }
+
+    public boolean isImported(){
+        return taxTypesDue.contains(TaxType.IMPORT);
     }
 }
