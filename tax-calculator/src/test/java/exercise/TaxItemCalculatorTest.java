@@ -1,36 +1,51 @@
 package exercise;
 
+import exercise.domain.ReceiptItem;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Set;
 
-import static exercise.TaxType.*;
-
+import static exercise.domain.TaxType.EXEMPT;
+import static exercise.domain.TaxType.IMPORT;
+import static exercise.domain.TaxType.SALES;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TaxItemCalculatorTest {
-
-    private final TaxItemCalculator underTest = new TaxItemCalculator();
+class RecieptItemTest {
 
     @Test
     public void calculateNormalSalesTax() {
-        assertThat(underTest.calculateTax("music CD", Set.of(SALES), new BigDecimal("14.99"))).isEqualTo(new BigDecimal("1.50"));
+        ReceiptItem underTest = new ReceiptItem("music CD", Set.of(SALES), new BigDecimal("14.99"));
+        assertThat(underTest.getTaxes()).isEqualTo(new BigDecimal("1.50"));
+        assertThat(underTest.getGrossValue()).isEqualTo(new BigDecimal("16.49"));
     }
 
     @Test
     public void calculateTaxExempt(){
-        assertThat(underTest.calculateTax("book", Set.of(EXEMPT), new BigDecimal("12.49"))).isEqualTo(BigDecimal.ZERO);
+        String bookNetValue = "12.49";
+        ReceiptItem underTest = new ReceiptItem("book", Set.of(EXEMPT), new BigDecimal(bookNetValue));
+        assertThat(underTest.getTaxes()).isZero();
+        assertThat(underTest.getGrossValue()).isEqualTo(bookNetValue);
     }
 
     @Test
     public void calculateImportTax(){
-        assertThat(underTest.calculateTax("imported chocolates", Set.of(IMPORT), new BigDecimal("10.00"))).isEqualTo(new BigDecimal("0.50"));
+        ReceiptItem underTest = new ReceiptItem("imported chocolates", Set.of(IMPORT), new BigDecimal("10.00"));
+        assertThat(underTest.getTaxes()).isEqualTo(new BigDecimal("0.50"));
+        assertThat(underTest.getGrossValue()).isEqualTo(new BigDecimal("10.50"));
     }
 
     @Test
     public void calculateImportAndSalesTax(){
-        assertThat(underTest.calculateTax("imported perfume", Set.of(IMPORT, SALES), new BigDecimal("47.50"))).isEqualTo(new BigDecimal("7,15"));
+        ReceiptItem underTest = new ReceiptItem("imported perfume", Set.of(IMPORT, SALES), new BigDecimal("47.50"));
+        assertThat(underTest.getGrossValue()).isEqualTo(new BigDecimal("54.65"));
+        assertThat(underTest.getTaxes()).isEqualTo(new BigDecimal("7.15"));
+    }
+
+    @Test
+    public void calculateImportAndSalesTax2(){
+        ReceiptItem underTest = new ReceiptItem("imported perfume", Set.of(IMPORT, SALES), new BigDecimal("27.99"));
+        assertThat(underTest.getGrossValue()).isEqualTo(new BigDecimal("32.19"));
+        assertThat(underTest.getTaxes()).isEqualTo(new BigDecimal("4.20"));
     }
 }
