@@ -1,7 +1,11 @@
 package exercise.domain;
 
+import exercise.exceptions.ValidationException;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class ReceiptItem {
@@ -14,15 +18,30 @@ public class ReceiptItem {
 
     /**
      * Signifies a single line (item) on the receipt
-     * @param name the name of the item
+     * @param name the name of the item - cannot be null or empty
      * @param taxTypesDue the type of taxes relevant to this item
-     * @param netValue the value of the item without any taxes added
+     * @param netValue the value of the item without any taxes added - must be greater than zero
+     * @throws ValidationException if any of the parameters are invalid
      */
-    public ReceiptItem(String name, Set<TaxType> taxTypesDue, BigDecimal netValue) {
+    public ReceiptItem(String name, Set<TaxType> taxTypesDue, BigDecimal netValue) throws ValidationException {
+        validate(name, taxTypesDue, netValue);
         this.name = name;
-        this.taxTypesDue = taxTypesDue;
+        this.taxTypesDue = taxTypesDue == null ? Set.of() : taxTypesDue;
         this.netValue = netValue;
         setCalculatedFields();
+    }
+
+    private void validate(String name, Set<TaxType> taxTypesDue, BigDecimal netValue) throws ValidationException {
+        List<String> errors = new ArrayList<>();
+        if (name == null || name.isBlank()) {
+            errors.add("Item needs a name");
+        }
+        if (netValue == null || netValue.compareTo(BigDecimal.ZERO) < 1) {
+            errors.add("Item needs to have a positive value");
+        }
+        if (! errors.isEmpty()){
+            throw new ValidationException(errors);
+        }
     }
 
     private void setCalculatedFields() {
