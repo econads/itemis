@@ -11,7 +11,7 @@ import static exercise.domain.TaxType.IMPORT;
 import static exercise.domain.TaxType.SALES;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class RecieptItemTest {
+class ReceiptItemTest {
 
     @Test
     public void calculateNormalSalesTax() {
@@ -21,7 +21,7 @@ class RecieptItemTest {
     }
 
     @Test
-    public void calculateTaxExempt(){
+    public void calculateTaxExempt() {
         String bookNetValue = "12.49";
         ReceiptItem underTest = new ReceiptItem("book", Set.of(EXEMPT), new BigDecimal(bookNetValue));
         assertThat(underTest.getTaxes()).isZero();
@@ -29,7 +29,7 @@ class RecieptItemTest {
     }
 
     @Test
-    public void calculateImportTax(){
+    public void calculateImportTax() {
         ReceiptItem underTest = new ReceiptItem("imported chocolates", Set.of(IMPORT), new BigDecimal("10.00"));
         assertThat(underTest.getTaxes()).isEqualTo(new BigDecimal("0.50"));
         assertThat(underTest.getGrossValue()).isEqualTo(new BigDecimal("10.50"));
@@ -43,7 +43,7 @@ class RecieptItemTest {
     }
 
     @Test
-    public void calculateImportAndSalesTax2(){
+    public void calculateImportAndSalesTax2() {
         ReceiptItem underTest = new ReceiptItem("imported perfume", Set.of(IMPORT, SALES), new BigDecimal("27.99"));
         assertThat(underTest.getGrossValue()).isEqualTo(new BigDecimal("32.19"));
         assertThat(underTest.getTaxes()).isEqualTo(new BigDecimal("4.20"));
