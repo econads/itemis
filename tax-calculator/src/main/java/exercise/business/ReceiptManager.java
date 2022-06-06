@@ -14,6 +14,7 @@ import static exercise.domain.TaxType.SALES;
 public class ReceiptManager {
 
     private static final Logger logger = LogManager.getLogger(ReceiptManager.class);
+
     public static void main(String[] args) throws ValidationException {
 
         logger.debug("Creating Output1 receipt");

@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class ReceiptItem {
@@ -87,5 +88,30 @@ public class ReceiptItem {
 
     public boolean isImported(){
         return taxTypesDue.contains(TaxType.IMPORT);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReceiptItem that = (ReceiptItem) o;
+        return name.equals(that.name) && Objects.equals(taxTypesDue, that.taxTypesDue) && netValue.equals(that.netValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, taxTypesDue, netValue);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ReceiptItem{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", taxTypesDue=").append(taxTypesDue);
+        sb.append(", netValue=").append(netValue);
+        sb.append(", grossValue=").append(grossValue);
+        sb.append(", taxes=").append(taxes);
+        sb.append('}');
+        return sb.toString();
     }
 }
