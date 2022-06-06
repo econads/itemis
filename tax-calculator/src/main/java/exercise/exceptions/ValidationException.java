@@ -5,6 +5,10 @@ import java.util.List;
 public class ValidationException extends Exception {
 
     private final List<String> errors;
+
+    public ValidationException(){
+        this.errors = List.of();
+    }
     public ValidationException(List<String> errors) {
         super("Problem creating ReceiptItem - invalid arguments");
         this.errors = errors;

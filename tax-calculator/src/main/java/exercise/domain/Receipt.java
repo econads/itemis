@@ -1,6 +1,9 @@
 package exercise.domain;
 
+import exercise.exceptions.BlockingException;
 import exercise.exceptions.ValidationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,34 +19,41 @@ import java.util.Set;
 
 public class Receipt {
 
+    private static final Logger logger = LogManager.getLogger(Receipt.class);
+
     private final List<ReceiptItem> items = new ArrayList<>();
 
     public void addItem(ReceiptItem item) {
         items.add(item);
     }
 
-    public List<ReceiptItem> getItems(){
+    public List<ReceiptItem> getItems() {
         return List.copyOf(items);
     }
 
-    public void readInReceiptFromFile(String filename){
+    public void readInReceiptFromFile(String filename) throws BlockingException {
         File input = new File(filename);
-        try (BufferedReader reader = new BufferedReader(new FileReader(input))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(input))) {
             String line;
-            while ((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 line = line.substring(2);
                 String[] substrings = line.split(" at ");
-                addItem(new ReceiptItem(removeImportedFromName(substrings[0]), getTaxFromName(substrings[0]), new BigDecimal(substrings[1])));
+                try {
+                    addItem(new ReceiptItem(removeImportedFromName(substrings[0]), getTaxFromName(substrings[0]), new BigDecimal(substrings[1])));
+                } catch (ValidationException e) {
+                    logger.error("Could not parse line {}, skipping ", line);
+                }
             }
-        } catch (IOException | ValidationException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new BlockingException("Could not read in file, please specify a different location.");
         }
     }
 
-    private String removeImportedFromName(String name) {
-        if (name.contains("imported")){
+    private String removeImportedFromName(String name) throws ValidationException {
+        if (name.contains("imported")) {
             String[] substrings = name.split("imported ");
-            name = Arrays.stream(substrings).reduce(String::concat).orElseThrow(IllegalArgumentException::new);
+            //put the string back together without 'imported' in it
+            name = Arrays.stream(substrings).reduce(String::concat).orElseThrow(ValidationException::new);
         }
         return name;
     }

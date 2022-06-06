@@ -1,29 +1,42 @@
 package exercise.business;
 
 import exercise.domain.Receipt;
-import exercise.domain.ReceiptItem;
-import exercise.exceptions.ValidationException;
+import exercise.exceptions.BlockingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.math.BigDecimal;
-import java.util.Set;
-
-import static exercise.domain.TaxType.SALES;
 
 public class ReceiptManager {
 
     private static final Logger logger = LogManager.getLogger(ReceiptManager.class);
 
-    public static void main(String[] args) throws ValidationException {
+    public static void main(String[] args) {
 
-        logger.debug("Creating Output1 receipt");
+        try {
+            validateArgs(args);
 
-        Receipt underTest = new Receipt();
-        underTest.addItem(new ReceiptItem("book", Set.of(), new BigDecimal("12.49")));
-        underTest.addItem(new ReceiptItem("music CD", Set.of(SALES), new BigDecimal("14.99")));
-        underTest.addItem(new ReceiptItem("chocolate bar", Set.of(), new BigDecimal("0.85")));
+            String inputFileName = args[0];
 
-        underTest.printReceipt();
+            logger.debug("Creating receipt from {}", inputFileName);
+
+            Receipt receipt = new Receipt();
+
+            receipt.readInReceiptFromFile(inputFileName);
+            receipt.printReceipt();
+
+        } catch (BlockingException e){
+            logger.error("Something went wrong, sorry.", e);
+        }
+    }
+
+    private static void validateArgs(String[] args) throws BlockingException {
+        if (args == null || args.length != 1){
+            logger.error("Please supply a filepath to an input file consisting only of lines with the following pattern:");
+            logger.error("1 <item name> at <item price>");
+            logger.error("The following items are recognised:");
+            logger.error("book, music CD, chocolate bar, box of chocolates, bottle of perfume, packet of headache pills");
+            logger.error("if import tax should be applied please include the word 'imported' in the name, e.g:");
+            logger.error("1 imported box of chocolates at 10.00");
+            throw new BlockingException("Wrong arguments");
+        }
     }
 }

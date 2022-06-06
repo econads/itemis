@@ -1,6 +1,7 @@
 package exercise.domain;
 
 import exercise.TestUtils;
+import exercise.exceptions.BlockingException;
 import exercise.exceptions.ValidationException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ class ReceiptTest {
     private final TestUtils testUtils = new TestUtils();
 
     @Test
-    public void readInInput1() throws ValidationException {
+    public void readInInput1() throws ValidationException, BlockingException {
         //given
         Receipt underTest = new Receipt();
         underTest.readInReceiptFromFile("src/test/resources/Input1.txt");
@@ -36,7 +37,7 @@ class ReceiptTest {
         assertThat(items).containsAll(expected);
     }
     @Test
-    public void readInInput2() throws ValidationException {
+    public void readInInput2() throws ValidationException, BlockingException {
         //given
         Receipt underTest = new Receipt();
         underTest.readInReceiptFromFile("src/test/resources/Input2.txt");
@@ -50,7 +51,7 @@ class ReceiptTest {
         assertThat(items).containsAll(expected);
     }
     @Test
-    public void readInInput3() throws ValidationException {
+    public void readInInput3() throws ValidationException, BlockingException {
         //given
         Receipt underTest = new Receipt();
         underTest.readInReceiptFromFile("src/test/resources/Input3.txt");
