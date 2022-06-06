@@ -8,8 +8,8 @@ the total cost of the items, and the total amounts of sales taxes paid. The roun
 tax rate of n%, a shelf price of p contains (np/100 rounded up to the nearest 0.05) amount of sales tax. Write an
 application that prints out the receipt details for these shopping baskets...
 
-### Assumptions
-- This code will only be used for a single currency with 100 smaller units to a big unit (100c,p = 1EUR,GBP etc.)
+### Assumptions/Limitations
+- This code will only be used for a single unspecified currency with 100 smaller units to a big unit (100c,p = 1EUR,GBP etc.)
 - The only items on the lists will be those listed in the inputs on the exercise
 - The code will be run locally for 1 person, no remote calls necessary
 - Each line of the receipt will be only 1 item, e.g. '2 bottles of perfume at 12.00 each' is excluded
