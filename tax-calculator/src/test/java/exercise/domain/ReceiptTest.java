@@ -26,7 +26,7 @@ class ReceiptTest {
         underTest.printReceipt();
 
         //then
-        doFilesMatch("Output1.txt");
+        checkFilesMatch("Output1.txt");
     }
 
     public void printReceiptOutput2() throws ValidationException {
@@ -39,7 +39,7 @@ class ReceiptTest {
         underTest.printReceipt();
 
         //then
-        doFilesMatch("Output2.txt");
+        checkFilesMatch("Output2.txt");
     }
 
     public void printReceiptOutput3() throws ValidationException {
@@ -53,10 +53,10 @@ class ReceiptTest {
         underTest.printReceipt();
 
         //then
-        doFilesMatch("Output3.txt");
+        checkFilesMatch("Output3.txt");
     }
 
-    private void doFilesMatch(String expectedFileName){
+    private void checkFilesMatch(String expectedFileName){
         File expected = new File("src/test/resources/" + expectedFileName);
         File actual = new File("Receipt.txt");
         assertThat(expected.exists()).isTrue();

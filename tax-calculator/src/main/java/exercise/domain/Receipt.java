@@ -22,11 +22,6 @@ public class Receipt {
 
     private void printReceiptToFile(StringBuilder stringBuilder) {
         File file = new File("Receipt.txt");
-        if( ! file.setWritable(true)){
-            //TODO deal with this - exception?
-            file.deleteOnExit();
-            return;
-        }
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(stringBuilder.toString());
         } catch (IOException e) {
