@@ -1,5 +1,6 @@
 package exercise.domain;
 
+import exercise.TestUtils;
 import exercise.exceptions.ValidationException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,8 @@ import static exercise.domain.TaxType.SALES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReceiptTest {
+
+    private final TestUtils testUtils = new TestUtils();
 
     @Test
     public void readInInput1() throws ValidationException {
@@ -75,7 +78,7 @@ class ReceiptTest {
         underTest.printReceipt();
 
         //then
-        checkFilesMatch("Output1.txt");
+        testUtils.checkFilesMatch("Output1.txt");
     }
 
     @Test
@@ -89,7 +92,7 @@ class ReceiptTest {
         underTest.printReceipt();
 
         //then
-        checkFilesMatch("Output2.txt");
+        testUtils.checkFilesMatch("Output2.txt");
     }
 
     @Test
@@ -105,15 +108,7 @@ class ReceiptTest {
         underTest.printReceipt();
 
         //then
-        checkFilesMatch("Output3.txt");
-    }
-
-    private void checkFilesMatch(String expectedFileName){
-        File expected = new File("src/test/resources/" + expectedFileName);
-        File actual = new File("Receipt.txt");
-        assertThat(expected.exists()).isTrue();
-        assertThat(actual.exists()).isTrue();
-        assertThat(actual).hasSameTextualContentAs(expected);
+        testUtils.checkFilesMatch("Output3.txt");
     }
 
     @AfterAll
