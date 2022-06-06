@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static exercise.domain.TaxType.IMPORT;
@@ -29,6 +31,7 @@ class ReceiptTest {
         checkFilesMatch("Output1.txt");
     }
 
+    @Test
     public void printReceiptOutput2() throws ValidationException {
         //given
         Receipt underTest = new Receipt();
@@ -42,12 +45,14 @@ class ReceiptTest {
         checkFilesMatch("Output2.txt");
     }
 
+    @Test
     public void printReceiptOutput3() throws ValidationException {
         //given
         Receipt underTest = new Receipt();
-        underTest.addItem(new ReceiptItem("book", Set.of(), new BigDecimal("12.49")));
-        underTest.addItem(new ReceiptItem("music CD", Set.of(SALES), new BigDecimal("14.99")));
-        underTest.addItem(new ReceiptItem("chocolate bar", Set.of(), new BigDecimal("0.85")));
+        underTest.addItem(new ReceiptItem("bottle of perfume", Set.of(IMPORT, SALES), new BigDecimal("27.99")));
+        underTest.addItem(new ReceiptItem("bottle of perfume", Set.of(SALES), new BigDecimal("18.99")));
+        underTest.addItem(new ReceiptItem("packet of headache pills", Set.of(), new BigDecimal("9.75")));
+        underTest.addItem(new ReceiptItem("box of chocolates", Set.of(IMPORT), new BigDecimal("11.25")));
 
         //when
         underTest.printReceipt();
