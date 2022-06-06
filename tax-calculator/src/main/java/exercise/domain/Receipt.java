@@ -20,6 +20,7 @@ import java.util.Set;
 public class Receipt {
 
     private static final Logger logger = LogManager.getLogger(Receipt.class);
+    public static final String EMPTY_FILE_ERROR = "Input file has no valid lines";
 
     private final List<ReceiptItem> items = new ArrayList<>();
 
@@ -35,38 +36,22 @@ public class Receipt {
         File input = new File(filename);
         try (BufferedReader reader = new BufferedReader(new FileReader(input))) {
             String line;
+            int linecount = 0;
             while ((line = reader.readLine()) != null) {
-                line = line.substring(2);
-                String[] substrings = line.split(" at ");
                 try {
-                    addItem(new ReceiptItem(removeImportedFromName(substrings[0]), getTaxFromName(substrings[0]), new BigDecimal(substrings[1])));
+                    addItem(ReceiptItem.parseReceiptItemFromString(line));
                 } catch (ValidationException e) {
                     logger.error("Could not parse line {}, skipping ", line);
+                    continue;
                 }
+                linecount++;
+            }
+            if (linecount == 0){
+                throw new IOException(EMPTY_FILE_ERROR);
             }
         } catch (IOException e) {
-            throw new BlockingException("Could not read in file, please specify a different location.");
+            throw new BlockingException("Could not read in file, please specify a different location.", e);
         }
-    }
-
-    private String removeImportedFromName(String name) throws ValidationException {
-        if (name.contains("imported")) {
-            String[] substrings = name.split("imported ");
-            //put the string back together without 'imported' in it
-            name = Arrays.stream(substrings).reduce(String::concat).orElseThrow(ValidationException::new);
-        }
-        return name;
-    }
-
-    private Set<TaxType> getTaxFromName(String name) {
-        Set<TaxType> taxTypes = new HashSet<>();
-        if (name.contains("imported")) {
-            taxTypes.add(TaxType.IMPORT);
-        }
-        if (name.contains("music") || name.contains("perfume")) {
-            taxTypes.add(TaxType.SALES);
-        }
-        return taxTypes;
     }
 
     public void printReceipt() {

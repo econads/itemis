@@ -7,4 +7,8 @@ public class BlockingException extends Exception {
     public BlockingException(String message) {
         super(message);
     }
+
+    public BlockingException(String message, Exception e){
+        super(message, e);
+    }
 }

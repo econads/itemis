@@ -5,6 +5,8 @@ import exercise.exceptions.ValidationException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -19,9 +21,10 @@ public class ReceiptItem {
 
     /**
      * Signifies a single line (item) on the receipt
-     * @param name the name of the item - cannot be null or empty
+     *
+     * @param name        the name of the item - cannot be null or empty
      * @param taxTypesDue the type of taxes relevant to this item
-     * @param netValue the value of the item without any taxes added - must be greater than zero
+     * @param netValue    the value of the item without any taxes added - must be greater than zero
      * @throws ValidationException if any of the parameters are invalid
      */
     public ReceiptItem(String name, Set<TaxType> taxTypesDue, BigDecimal netValue) throws ValidationException {
@@ -32,6 +35,27 @@ public class ReceiptItem {
         setCalculatedFields();
     }
 
+    /**
+     * This method creates a {@link ReceiptItem} from a line formatted like this:
+     * "1 [item name] at [item net value]".
+     * Where item name includes the word 'imported' import tax will be added.
+     * For all valid items except books, food and medical products, sales tax will be added
+     *
+     * @param stringToParse string in the format described
+     * @return new {@link ReceiptItem}
+     */
+    public static ReceiptItem parseReceiptItemFromString(String stringToParse) throws ValidationException {
+        stringToParse = stringToParse.substring(2);
+        String[] constructorArguments = stringToParse.split(" at ");
+        if (constructorArguments.length != 2){
+            throw new ValidationException(List.of("Badly formatted line"));
+        }
+        String name = constructorArguments[0];
+        String netValue = constructorArguments[1];
+
+        return new ReceiptItem(removeImportedFromName(name), getTaxFromName(name), new BigDecimal(netValue));
+    }
+
     private void validate(String name, Set<TaxType> taxTypesDue, BigDecimal netValue) throws ValidationException {
         List<String> errors = new ArrayList<>();
         if (name == null || name.isBlank()) {
@@ -40,9 +64,29 @@ public class ReceiptItem {
         if (netValue == null || netValue.compareTo(BigDecimal.ZERO) < 1) {
             errors.add("Item needs to have a positive value");
         }
-        if (! errors.isEmpty()){
+        if (!errors.isEmpty()) {
             throw new ValidationException(errors);
         }
+    }
+
+    private static String removeImportedFromName(String name) throws ValidationException {
+        if (name.contains("imported")) {
+            String[] substrings = name.split("imported ");
+            //put the string back together without 'imported' in it
+            name = Arrays.stream(substrings).reduce(String::concat).orElseThrow(ValidationException::new);
+        }
+        return name;
+    }
+
+    private static Set<TaxType> getTaxFromName(String name) {
+        Set<TaxType> taxTypes = new HashSet<>();
+        if (name.contains("imported")) {
+            taxTypes.add(TaxType.IMPORT);
+        }
+        if (name.contains("music") || name.contains("perfume")) {
+            taxTypes.add(TaxType.SALES);
+        }
+        return taxTypes;
     }
 
     private void setCalculatedFields() {
@@ -86,7 +130,7 @@ public class ReceiptItem {
         return taxes;
     }
 
-    public boolean isImported(){
+    public boolean isImported() {
         return taxTypesDue.contains(TaxType.IMPORT);
     }
 

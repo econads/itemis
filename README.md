@@ -17,5 +17,6 @@ application that prints out the receipt details for these shopping baskets...
 ## Run instructions
 - Build the jar with ```mvn clean package```
 - The jar is built as ```tax-calculator-1.0-SNAPSHOT-jar-with-dependencies.jar```  in the target folder
-- The jar can be run as usual with java -jar <path to jar> or by double clicking
-- Running the jar provides a fixed receipt called Receipt.txt in the same directory the jar is run from
+- The jar can be run as usual with java -jar <path to jar> <input file name>
+- Running the jar provides a receipt called Receipt.txt in the same directory the jar is run from, which is generated
+from the <input file name>.

@@ -3,7 +3,7 @@ package exercise.domain;
 import exercise.TestUtils;
 import exercise.exceptions.BlockingException;
 import exercise.exceptions.ValidationException;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -15,6 +15,7 @@ import java.util.Set;
 import static exercise.domain.TaxType.IMPORT;
 import static exercise.domain.TaxType.SALES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ReceiptTest {
 
@@ -64,10 +65,44 @@ class ReceiptTest {
 
         //when
         List<ReceiptItem> items = underTest.getItems();
+
+        //then
         assertThat(items.size()).isEqualTo(4);
         assertThat(items).containsAll(expected);
     }
+
     @Test
+    public void emptyInputFile() {
+        //when
+        BlockingException exception = assertThrows(BlockingException.class,
+                () -> new Receipt().readInReceiptFromFile("src/test/resources/EmptyInput.txt"));
+
+        //then
+        assertThat(exception.getCause()).hasMessage(Receipt.EMPTY_FILE_ERROR);
+
+        File actual = new File("Receipt.txt");
+        assertThat(actual.exists()).isFalse();
+    }
+
+    @Test
+    public void invalidLine() throws BlockingException, ValidationException {
+        //given
+        List<ReceiptItem> expected = new ArrayList<>();
+        expected.add(new ReceiptItem("bottle of perfume", Set.of(IMPORT, SALES), new BigDecimal("27.99")));
+        expected.add(new ReceiptItem("packet of headache pills", Set.of(), new BigDecimal("9.75")));
+        expected.add(new ReceiptItem("box of chocolates", Set.of(IMPORT), new BigDecimal("11.25")));
+
+        //when
+        Receipt underTest = new Receipt();
+        underTest.readInReceiptFromFile("src/test/resources/InvalidLine.txt");
+        List<ReceiptItem> items = underTest.getItems();
+
+        //then
+        assertThat(items.size()).isEqualTo(3);
+        assertThat(items).containsAll(expected);
+    }
+
+        @Test
     public void printReceiptOutput1() throws ValidationException {
         //given
         Receipt underTest = new Receipt();
@@ -112,10 +147,10 @@ class ReceiptTest {
         testUtils.checkFilesMatch("Output3.txt");
     }
 
-    @AfterAll
-    public static void cleanup(){
+    @AfterEach
+    public void cleanup(){
         File actual = new File("Receipt.txt");
-        actual.deleteOnExit();
+        actual.delete();
     }
 
 }
