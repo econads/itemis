@@ -60,10 +60,10 @@ public class Receipt {
 
     private Set<TaxType> getTaxFromName(String name) {
         Set<TaxType> taxTypes = new HashSet<>();
-        if (name.contains("imported")){
+        if (name.contains("imported")) {
             taxTypes.add(TaxType.IMPORT);
         }
-        if (name.contains("music") || name.contains("perfume")){
+        if (name.contains("music") || name.contains("perfume")) {
             taxTypes.add(TaxType.SALES);
         }
         return taxTypes;
@@ -78,6 +78,7 @@ public class Receipt {
         File output = new File("Receipt.txt");
         try (FileWriter writer = new FileWriter(output)) {
             writer.write(stringBuilder.toString());
+            logger.info("Receipt printed to {}", output.getCanonicalPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
