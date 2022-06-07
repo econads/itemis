@@ -12,10 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Receipt {
 
@@ -35,22 +32,28 @@ public class Receipt {
     public void readInReceiptFromFile(String filename) throws BlockingException {
         File input = new File(filename);
         try (BufferedReader reader = new BufferedReader(new FileReader(input))) {
-            String line;
-            int linecount = 0;
-            while ((line = reader.readLine()) != null) {
-                try {
-                    addItem(ReceiptItem.parseReceiptItemFromString(line));
-                } catch (ValidationException e) {
-                    logger.error("Could not parse line {}, skipping ", line);
-                    continue;
-                }
-                linecount++;
-            }
-            if (linecount == 0){
-                throw new IOException(EMPTY_FILE_ERROR);
-            }
+
+            createReceiptItems(reader);
+
         } catch (IOException e) {
             throw new BlockingException("Could not read in file, please specify a different location.", e);
+        }
+    }
+
+    private void createReceiptItems(BufferedReader reader) throws IOException {
+        String line;
+        int lineCount = 0;
+        while ((line = reader.readLine()) != null) {
+            try {
+                addItem(ReceiptItem.parseReceiptItemFromString(line));
+            } catch (ValidationException e) {
+                logger.error("Could not parse line {}, skipping ", line);
+                continue;
+            }
+            lineCount++;
+        }
+        if (lineCount == 0){
+            throw new IOException(EMPTY_FILE_ERROR);
         }
     }
 

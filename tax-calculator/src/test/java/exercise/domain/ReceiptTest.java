@@ -102,6 +102,23 @@ class ReceiptTest {
         assertThat(items).containsAll(expected);
     }
 
+    @Test
+    public void unknownItem() throws BlockingException, ValidationException {
+        //given
+        List<ReceiptItem> expected = new ArrayList<>();
+        expected.add(new ReceiptItem("bananas", Set.of(IMPORT), new BigDecimal("10.00")));
+        expected.add(new ReceiptItem("bottle of perfume", Set.of(SALES), new BigDecimal("47.50")));
+
+        //when
+        Receipt underTest = new Receipt();
+        underTest.readInReceiptFromFile("src/test/resources/UnknownItem.txt");
+        List<ReceiptItem> items = underTest.getItems();
+
+        //then
+        assertThat(items.size()).isEqualTo(2);
+        assertThat(items).containsAll(expected);
+    }
+
         @Test
     public void printReceiptOutput1() throws ValidationException {
         //given
