@@ -146,16 +146,4 @@ public class ReceiptItem {
     public int hashCode() {
         return Objects.hash(name, taxTypesDue, netValue);
     }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ReceiptItem{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", taxTypesDue=").append(taxTypesDue);
-        sb.append(", netValue=").append(netValue);
-        sb.append(", grossValue=").append(grossValue);
-        sb.append(", taxes=").append(taxes);
-        sb.append('}');
-        return sb.toString();
-    }
 }
